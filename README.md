@@ -1,42 +1,128 @@
-# Majora's Mask: Recompiled Mod Template
+# Anti-67 Sword Mod for Majora's Mask: Recompiled
 
-This is an example mod for Majora's Mask: Recompiled that can be used as a template for creating mods. It has a basic build system, headers, sample code, and a mod config toml.
+A mod that adds the Anti-67 Sword to Majora's Mask: Recompiled. This powerful weapon is for those who dislike the 67 meme!
 
-Example code for using the recompui API to build ingame UI can be found in the `ui-example` branch.
+## Features
 
-### Writing mods
-See [this document](https://hackmd.io/fMDiGEJ9TBSjomuZZOgzNg) for an explanation of the modding framework, including how to write function patches and perform interop between different mods.
+- **New Item**: Anti-67 Sword automatically given at game start
+- **C-Button Equippable**: Can be equipped to C-Left, C-Down, or C-Right
+- **Energy Beams**: Shoots powerful beams when swung (similar to Fierce Deity sword)
+- **Enhanced Stats**: Higher damage (8) and extended range (800 units)
 
-### Tools
-You'll need to install `clang` and `make` to build this template.
-* On Windows, using [chocolatey](https://chocolatey.org/) to install both is recommended. The packages are `llvm` and `make` respectively.
-  * The LLVM 19.1.0 [llvm-project](https://github.com/llvm/llvm-project) release binary, which is also what chocolatey provides, does not support MIPS correctly. The solution is to install 18.1.8 instead, which can be done in chocolatey by specifying `--version 18.1.8` or by downloading the 18.1.8 release directly.
-* On Linux, these can both be installed using your distro's package manager. You may also need to install your distro's package for the `lld` linker. On Debian/Ubuntu based distros this will be the `lld` package.
-* On MacOS, these can both be installed using Homebrew. Apple clang won't work, as you need a mips target for building the mod code.
+## Building the Mod
 
-On Linux and MacOS, you'll need to also ensure that you have the `zip` utility installed.
+### Prerequisites
 
-You'll also need to grab a build of the `RecompModTool` utility from the releases of [N64Recomp](https://github.com/N64Recomp/N64Recomp). You can also build it yourself from that repo if desired.
+You'll need the following tools installed:
+- `clang` (version 18.1.8 recommended for proper MIPS support)
+- `make`
+- `RecompModTool` from [N64Recomp releases](https://github.com/N64Recomp/N64Recomp/releases)
 
-### Building
-* First, run `make` (with an optional job count) to build the mod code itself.
-* Next, run the `RecompModTool` utility with `mod.toml` as the first argument and the build dir (`build` in the case of this template) as the second argument.
-  * This will produce your mod's `.nrm` file in the build folder.
-  * If you're on MacOS, you may need to specify the path to the `clang` and `ld.lld` binaries using the `CC` and `LD` environment variables, respectively.
+### Build Steps
 
-### Updating the Majora's Mask Decompilation Submodule
-Mods can also be made with newer versions of the Majora's Mask decompilation instead of the commit targeted by this repo's submodule.
-To update the commit of the decompilation that you're targeting, follow these steps:
-* Build the [N64Recomp](https://github.com/N64Recomp/N64Recomp) repo and copy the N64Recomp executable to the root of this repository.
-  * Make sure you pass `KEEP_MDEBUG=1` to `make` when building the decomp in order to keep debug information. This must be done from a clean build if you have built the decomp already without `KEEP_MDEBUG=1`.
-* Build the version of the Majora's Mask decompilation that you want to update to and copy the resulting .elf file to the root of this repository.
-* Update the `mm-decomp` submodule in your clone of this repo to point to the commit you built in the previous step.
-* Run `N64Recomp generate_symbols.toml --dump-context`
-* Rename `dump.toml` and `data_dump.toml` to `mm.us.rev1.syms.toml` and `mm.us.rev1.datasyms.toml` respectively.
-  * Place both files in the `Zelda64RecompSyms` folder.
-* Try building.
-  * If it succeeds, you're done.
-  * If it fails due to a missing header, create an empty header file in the `include/dummy_headers` folder, with the same path.
-    * For example, if it complains that `assets/objects/object_cow/object_cow.h` is missing, create an empty `include/dummy_headers/objects/object_cow.h` file.
-  * If RecompModTool fails due to a function "being marked as a patch but not existing in the original ROM", it's likely that function you're patching was renamed in the Majora's Mask decompilation.
-    * Find the relevant function in the map file for the old decomp commit, then go to that address in the new map file, and update the reference to this function in your code with the new name.
+1. **Clone the template repository** (if you haven't already):
+```bash
+git clone --recursive https://github.com/Zelda64Recomp/MMRecompModTemplate.git anti67_sword_mod
+cd anti67_sword_mod
+```
+
+2. **Replace the template files** with the Anti-67 Sword mod files:
+   - Copy `mod.toml` to the root directory
+   - Copy `anti67_sword.c` to the `src/` directory
+   - Copy `Makefile` to the root directory
+   - Copy `mod.ld` to the root directory
+
+3. **Build the mod code**:
+```bash
+make -j4
+```
+
+4. **Generate the mod file (.nrm)**:
+```bash
+RecompModTool mod.toml build
+```
+
+This will create `anti67sword.nrm` in the `build/` directory.
+
+## Installation
+
+### Using GitHub Actions (Recommended for Mobile)
+
+Since you're on mobile, the easiest way is to use GitHub Actions to build automatically:
+
+1. Fork or create a new repository from the MMRecompModTemplate
+2. Upload these mod files to your repository
+3. Push to GitHub
+4. GitHub Actions will automatically build the mod
+5. Download the `.nrm` file from the Actions artifacts
+
+### Manual Installation
+
+1. Locate your `anti67sword.nrm` file from the build
+2. Open Majora's Mask: Recompiled
+3. Drag and drop the `.nrm` file onto the game window, OR
+4. Click "Install Mods" in the mod menu and select the `.nrm` file
+
+## Usage
+
+1. Start a new game or load an existing save
+2. The Anti-67 Sword will automatically be added to your inventory
+3. Open the pause menu and equip it to a C-button (C-Left, C-Down, or C-Right)
+4. Swing the sword to shoot powerful energy beams!
+
+## Technical Details
+
+### Beam Properties
+- **Damage**: 8 (higher than standard sword beams)
+- **Range**: 800 units (extended range)
+- **Speed**: 30.0 units/frame
+- **Behavior**: Fires on every sword swing, similar to Fierce Deity sword
+
+### Item ID
+- Custom Item ID: `0xA0` (avoids conflicts with existing items)
+
+## Customization
+
+Want to modify the sword's properties? Edit these values in `anti67_sword.c`:
+
+```c
+#define ANTI67_BEAM_DAMAGE 8      // Beam damage
+#define ANTI67_BEAM_RANGE 800.0f  // Maximum travel distance
+```
+
+Then rebuild the mod using the steps above.
+
+## Troubleshooting
+
+### Build Errors
+
+**"clang: command not found"**
+- Install clang via your package manager or Chocolatey (Windows)
+
+**"MIPS target not supported"**
+- Make sure you're using LLVM/Clang 18.1.8, not 19.x
+
+**"Missing header files"**
+- Ensure you've initialized the git submodules: `git submodule update --init --recursive`
+
+### Game Crashes
+
+- Make sure you're using Majora's Mask: Recompiled version 1.2.2 or higher
+- Try disabling other mods to check for conflicts
+- Verify the `.nrm` file was built correctly
+
+## Credits
+
+- **Mod Author**: Anti67 Modder
+- **Template**: [Zelda64Recomp Team](https://github.com/Zelda64Recomp)
+- **Zelda 64: Recompiled**: [Zelda64Recomp Project](https://github.com/Zelda64Recomp/Zelda64Recomp)
+
+## License
+
+This mod is released under CC0-1.0 license (public domain).
+
+## Support
+
+For issues or questions:
+- Open an issue on the GitHub repository
+- Join the [N64: Recompiled Discord](https://discord.gg/N64Recomp)

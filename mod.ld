@@ -1,12 +1,40 @@
-RAMBASE    = 0x81000000;
+/* Linker script for Anti-67 Sword mod */
 
-MEMORY {
-    extram(ARWX) : ORIGIN = RAMBASE, LENGTH = 64M
-}
+SECTIONS
+{
+    /* Code section */
+    .text : {
+        *(.text)
+        *(.text.*)
+    }
 
-SECTIONS {
-    /* All of the sections needed will get passed through to output sections automatically. */
-    /* Therefore, all that's needed in the sections command is the discards. */
+    /* Read-only data */
+    .rodata : {
+        *(.rodata)
+        *(.rodata.*)
+    }
 
-    /DISCARD/ : { *(.got) *(.MIPS.abiflags) *(.reginfo) *(.pdr) *(.comment) }
+    /* Initialized data */
+    .data : {
+        *(.data)
+        *(.data.*)
+    }
+
+    /* Uninitialized data */
+    .bss : {
+        *(.bss)
+        *(.bss.*)
+        *(COMMON)
+    }
+
+    /* Discard unnecessary sections */
+    /DISCARD/ : {
+        *(.MIPS.abiflags)
+        *(.MIPS.options)
+        *(.pdr)
+        *(.reginfo)
+        *(.comment)
+        *(.note.*)
+        *(.mdebug.*)
+    }
 }

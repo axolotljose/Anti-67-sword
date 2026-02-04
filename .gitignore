@@ -1,13 +1,22 @@
-*.d
+# Build artifacts
+build/
 *.o
 *.elf
 *.bin
-*.exe
-*.dll
-*.lib
-*.pdb
-*.exp
-./funcs.h
-patches.map
-build/
-.vscode/settings.json
+*.map
+*.nrm
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak

@@ -1,16 +1,12 @@
-# Config file for Majora's Mask NTSC 1.0 Recompilation.
+# Symbol generation configuration for Anti-67 Sword mod
 
-[input]
-entrypoint = 0x80080000
-# Paths are relative to the location of this config file.
-output_func_path = "RecompiledFuncs"
-relocatable_sections_path = "overlays.us.rev1.txt"
-elf_path = "mm-n64-us.elf"
-use_mdebug = true
+# Paths
+[paths]
+# Path to the game's symbol files
+symbols_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
+data_symbols_file = "Zelda64RecompSyms/mm.us.rev1.datasyms.toml"
 
-[patches]
-
-# Ignore sGameOverTimer, as it has incorrect mdebug info due to decomp preprocessing the object to move .data into .rodata.
-ignored = [
-    "sGameOverTimer"
-]
+# Build configuration
+[build]
+# Output directory for generated files
+output_dir = "build"
